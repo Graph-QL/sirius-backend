@@ -1,13 +1,6 @@
 const { GraphQLServer } = require('graphql-yoga');
 
 
-const dinnerOptions = ['🍕', '🌭', '🍔', '🥗', '🍣'];
-
-const typeDefs = `
-  type Query {
-    whatsForDinner: String!
-  }
-`
 
 const resolvers = {
   Query: {
@@ -26,22 +19,14 @@ const options = {
   playground: '/playground',
 }
 
-const server = new GraphQLServer({ typeDefs, resolvers })
+const server = new GraphQLServer({
+  typeDefs: './src/schema.graphql',
+  resolvers
+})
+
 server.start(options, ({ port }) =>
   console.log(
     `Server started, listening on port ${port} for incoming requests.`,
   ),
 )
 
-// const opts = {
-//   port: 7777,
-//   endpoint: '/graphql'
-// }
-
-// const server = new GraphQLServer({ typeDefs, resolvers, opts });
-
-// server.start(() => {
-//   console.log(
-//     `😄 Server running at http://localhost:${opts.port}${opts.endpoint}`
-//   );
-// });
