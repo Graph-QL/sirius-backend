@@ -1,15 +1,47 @@
-const express = require('express');
+const { GraphQLServer } = require('graphql-yoga');
 
-const app = express();
 
-app.listen(3333, function(){
-	console.log('Listening to port 3333');
-})
+const dinnerOptions = ['🍕', '🌭', '🍔', '🥗', '🍣'];
 
-app.get('/', function(req, res) {
-  res.send('Hello Universe')
-})
+const typeDefs = `
+  type Query {
+    whatsForDinner: String!
+  }
+`
 
-app.get('/test', function(req, res) {
-  res.send('Test successfull!')
-})
+const resolvers = {
+  Query: {
+    whatsForDinner: (_, args) => {
+      const idx = Math.floor(Math.random() * dinnerOptions.length);
+      const foodChoice = dinnerOptions[idx];
+      return `Tonight we eat ${foodChoice}`;
+    }
+  },
+}
+
+const options = {
+  port: 3333,
+  endpoint: '/graphql',
+  subscriptions: '/subscriptions',
+  playground: '/playground',
+}
+
+const server = new GraphQLServer({ typeDefs, resolvers })
+server.start(options, ({ port }) =>
+  console.log(
+    `Server started, listening on port ${port} for incoming requests.`,
+  ),
+)
+
+// const opts = {
+//   port: 7777,
+//   endpoint: '/graphql'
+// }
+
+// const server = new GraphQLServer({ typeDefs, resolvers, opts });
+
+// server.start(() => {
+//   console.log(
+//     `😄 Server running at http://localhost:${opts.port}${opts.endpoint}`
+//   );
+// });
